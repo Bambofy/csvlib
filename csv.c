@@ -4,22 +4,22 @@
 void createcsvheader(char* characterstring,
                      char (*header)[maxheaderlen])
 {
-    uint32_t charstringlength;
+    unsigned int charstringlength; // Length of the character string parameter.
     
-    if (characterstring == NULL)
+    if (characterstring == NULL) // Check that the character string isn't null.
     {
         fault("null in parameter", 0.0f);
     }
-    if (header == NULL)
+    if (header == NULL) // Check that the header parameter is not null.
     {
         fault("null out parameter", 0.0f);
     }
-    charstringlength = strlen(characterstring);
-    if (charstringlength > maxheaderlen) // Comparing the given string to the maximum length a header can be
+    charstringlength = strlen(characterstring); // Calculate the length of the string.
+    if (charstringlength > maxheaderlen) // Compare the given string to the maximum length a header can be
     {
         fault("char string too long", 0.0f);
     }
-    strncpy(*header, characterstring, charstringlength); // Copying the string given into the header destination.
+    strncpy(*header, characterstring, charstringlength); // Copy the string given into the header destination.
 }
 
 void createcsvfile(char filename[maxfieldnamelen],
@@ -28,30 +28,33 @@ void createcsvfile(char filename[maxfieldnamelen],
     FILE* newfilespointer;	// New file's file pointer.
     DWORD fileattributes; // File attributes.
 
-    if (fopen(filename, "r") != NULL)
+    newfilespointer = fopen(filename, "r"); // Attempt to open the file.
+    if (newfilespointer != NULL) // Open the file and check for success.
     {
+        fclose(newfilespointer); // Close the open file.
         fault("file already exists", 0.0f);
     }
     else
     {
-        newfilespointer = fopen(filename, "w");
-        fputs(header, newfilespointer);
-        fclose(newfilespointer);
+        fclose(newfilespointer); // Close the previous file pointer.
+        newfilespointer = fopen(filename, "w"); // Open or create the new file.
+        fputs(header, newfilespointer); // Put the header into the new file.
+        fclose(newfilespointer); // Close the new file.
     }
 }
 
 void removecsvfile(char filename[maxfieldnamelen])
 {
-    remove(filename);
+    remove(filename); // Remove the file from the disk.
 }
 
 void opencsvfile(char filename[maxfieldnamelen],
-                 FILE** resultingfilepointer)
+                        FILE** resultingfilepointer)
 {
-    char header[maxheaderlen];
-    DWORD fileattributes;
+    char header[maxheaderlen]; // header within the csv file.
+    DWORD fileattributes; // Attributes of the file to open.
 
-    if (resultingfilepointer == NULL)
+    if (resultingfilepointer == NULL) // Checking that the resulting file pointer
     {
         fault("null out parameter", 0.0f);
     }
